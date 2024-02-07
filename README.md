@@ -1,4 +1,4 @@
-#simpControl
+# simpControl
 a simple mobile app that allows you to convert your mobile to a touchpad
 
 todo:
