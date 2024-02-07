@@ -13,13 +13,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="#1C2132"
+        android:background="@drawable/custom_top_bar"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         tools:ignore="UselessParent">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/settingsButton"
+            android:layout_width="28dp"
+            android:textAlignment="textStart"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:textSize="25sp"
@@ -51,9 +53,11 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_weight="1"
-            android:background="#343C57"
+            android:background="@drawable/settings_rounded"
             android:textSize="20sp"
             android:gravity="center"
+
+            android:elevation="5dp"
 
             android:layout_marginStart="5dp"
             android:layout_marginEnd="3dp"
@@ -68,9 +72,11 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_weight="1"
-            android:background="#343C57"
+            android:background="@drawable/settings_rounded"
             android:textSize="20sp"
             android:gravity="center"
+
+            android:elevation="5dp"
 
             android:layout_marginStart="3dp"
             android:layout_marginEnd="5dp"
@@ -94,12 +100,17 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_weight="1"
-            android:background="#343C57"
+            android:background="@drawable/settings_rounded"
             android:textSize="20sp"
             android:gravity="center"
+
+            android:elevation="5dp"
+
             android:layout_marginStart="5dp"
             android:layout_marginEnd="3dp"
-            android:layout_marginVertical="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="5dp"
+
             android:text="@string/advance_trackpad_mode"
             android:textColor="#B5B5B5" />
 
@@ -108,12 +119,16 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_weight="1"
-            android:background="#343C57"
+            android:background="@drawable/settings_rounded"
             android:textSize="20sp"
             android:gravity="center"
+
+            android:elevation="5dp"
+
             android:layout_marginStart="3dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginVertical="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="5dp"
             android:text="@string/advance_gyro_mode"
             android:textColor="#B5B5B5" />
 

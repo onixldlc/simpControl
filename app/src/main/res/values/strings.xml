@@ -2,7 +2,7 @@
     <string name="app_name">SimpControl</string>
     <string name="trackpad_mode_text">Trackpad mode</string>
     <string name="gyro_mode_text">Gyro mode</string>
-    <string name="menu_unicode">☰</string>
+    <string name="menu_unicode">☰ </string>
     <string name="placeholder">[placeholder]</string>
     <string name="mode_trackpad">mode: Trackpad</string>
     <string name="mode_advance_trackpad">mode: Advance Trackpad</string>
@@ -12,4 +12,11 @@
     <string name="advance_trackpad_mode">Advance Trackpad mode</string>
     <string name="advance_gyro_mode">Advance Gyro mode</string>
     <string name="ready">Ready!</string>
+    <string name="apply_text">Apply</string>
+    <string name="send_test_text">Send Test</string>
+    <string name="server_port">Server Port:</string>
+    <string name="_8008">8008</string>
+    <string name="error_invalid_ip">ERROR! invalid ip!</string>
+    <string name="error_invalid_port">ERROR! invalid port!</string>
+    <string name="success_changes_were_saved">SUCCESS! changes were saved!</string>
 </resources>

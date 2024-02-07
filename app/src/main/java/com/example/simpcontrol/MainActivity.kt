@@ -3,6 +3,7 @@ package com.example.simpcontrol
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintSet.Motion
 
 class MainActivity : AppCompatActivity() {
     private var mVelocityTracker: VelocityTracker? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         val advanceTrackpadButton = findViewById<TextView>(R.id.advance_trackpad_mode_selection)
         val gyroButton = findViewById<TextView>(R.id.gyro_mode_selection)
         val advanceGyroButton = findViewById<TextView>(R.id.advance_gyro_mode_selection)
+        val settingButton = findViewById<TextView>(R.id.settingsButton)
 
         var mode = ""
 
@@ -45,6 +46,12 @@ class MainActivity : AppCompatActivity() {
             mode = "advanceGyroControl"
             runControl(mode)
         }
+
+        settingButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java).apply {
+            })
+        }
+
 
     }
 
