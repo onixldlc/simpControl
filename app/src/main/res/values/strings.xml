@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SimpControl</string>
+    <string name="trackpad_mode_text">Trackpad mode</string>
+    <string name="gyro_mode_text">Gyro mode</string>
+    <string name="menu_unicode">☰</string>
+    <string name="placeholder">[placeholder]</string>
+    <string name="mode_trackpad">mode: Trackpad</string>
+    <string name="mode_advance_trackpad">mode: Advance Trackpad</string>
+    <string name="mode_gyro">mode: Gyro</string>
+    <string name="mode_advance_gyro">mode: Advance Gyro</string>
+    <string name="not_implemented_yet">not implemented yet!</string>
+    <string name="advance_trackpad_mode">Advance Trackpad mode</string>
+    <string name="advance_gyro_mode">Advance Gyro mode</string>
+    <string name="ready">Ready!</string>
+</resources>
