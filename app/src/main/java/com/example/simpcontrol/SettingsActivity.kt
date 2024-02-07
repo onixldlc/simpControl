@@ -61,18 +61,18 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         typingHandler(ipInput) {
+            println(it)
             serverIP = it.toString()
-            println(it.toString())
         }
 
         typingHandler(portInput) {
+            println(it)
             if(it.isNullOrEmpty()){
                 serverPort = -1
             }
-            if(it.toString().isDigitsOnly()){
+            else{
                 serverPort = it.toString().toInt()
             }
-            println(it)
         }
     }
 
@@ -96,10 +96,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun loadSharedPreference() {
         serverIP = sharedPref?.getString(UserSettings.SERVERIP,"192.168.0.1").toString()
-        val temp = sharedPref?.getString(UserSettings.SERVERPORT,"8008").toString()
-        if(temp.isDigitsOnly()){
-            serverPort = temp.toInt()
-        }
+        serverPort = sharedPref?.getInt(UserSettings.SERVERPORT,8008).toString().toInt()
     }
 
     private fun saveSetting(statusView:TextView){
@@ -112,14 +109,13 @@ class SettingsActivity : AppCompatActivity() {
             return
         }
 
-
         val isServerPortValid = serverPort < 2.0.pow(16.0).toInt() && serverPort > 0
         if(!isServerPortValid){
             statusView.text = getString(R.string.error_invalid_port)
             return
         }
 
-        editor?.putString(UserSettings.SERVERPORT, serverIP)
+        editor?.putString(UserSettings.SERVERIP, serverIP)
         editor?.putInt(UserSettings.SERVERPORT, serverPort)
 
         editor?.apply()
