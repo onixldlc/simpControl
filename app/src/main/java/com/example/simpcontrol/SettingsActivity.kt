@@ -15,7 +15,7 @@ import kotlin.math.pow
 
 class SettingsActivity : AppCompatActivity() {
 
-//    var backButton: TextView? = null
+//    var backButton: TextView
 //    var ipInput: TextView? = null
 //    var portInput: TextView? = null
 //    var applyButton: TextView? = null

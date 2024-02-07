@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class ControlActivity : AppCompatActivity() {
+    private var trackpadHandler = TrackpadHandler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +23,7 @@ class ControlActivity : AppCompatActivity() {
         when(mode){
             "trackpadControl" -> {
                 titleText=getString(R.string.mode_trackpad)
-                TrackpadHandler.run(touchAreaView, debugView, this)
+                trackpadHandler.run(touchAreaView, debugView, this)
             }
             "advanceTrackpadControl" -> {
                 titleText=getString(R.string.mode_advance_trackpad)
