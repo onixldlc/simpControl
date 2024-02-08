@@ -2,17 +2,31 @@ package com.example.simpcontrol
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import java.lang.Error
+import java.util.concurrent.Executor
+import kotlin.properties.Delegates
 
 class TrackpadHandler {
+    val networkHandler = NetworkHandler()
+
+    private lateinit var serverIP:String
+    private var serverPort by Delegates.notNull<Int>()
+
     private var mVelocityTracker: VelocityTracker? = null
 
     private var isLeftClick: Boolean = false
     private var isRightClick: Boolean = false
     private var clickCounter: Int = 0
+
+    private var sendPackets = false
+
 
     private var isMove: Boolean = false
 
@@ -21,6 +35,30 @@ class TrackpadHandler {
 
     fun run(touchArea: View, debug: TextView, context: Context) {
         debug.text = context.getString(R.string.ready)
+
+        val sharedPref = context.getSharedPreferences(UserSettings.PREFERENCE,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        serverIP = sharedPref.getString(UserSettings.SERVERIP,"192.168.0.1").toString()
+        serverPort = sharedPref.getInt(UserSettings.SERVERPORT,8008).toString().toInt()
+
+        try {
+            println("[#]  testing reach to: $serverIP")
+            networkHandler.testConnection(serverIP){
+                if(it){
+                    println("[#]  successfully reach: $serverIP")
+                    networkHandler.connect(serverIP, serverPort){
+                        sendPackets=true
+                    }
+                }else{
+                    println("[#]  fail to reach: $serverIP")
+                }
+            }
+        }catch (err: Error){
+            println(err)
+        }
+
+
         touchArea.setOnTouchListener(object : View.OnTouchListener {
             @SuppressLint("ClickableViewAccessibility", "Recycle")
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -52,20 +90,24 @@ class TrackpadHandler {
                             val yVel = getYVelocity(pointerId) * -1
 
                             if ((-sens < xVel && xVel < sens) && (-sens < yVel && yVel < sens) && !isMove) {
-
                                 "touched on x:${pointX}, y:${pointY}".also { debug.text = it }
-                                if (isLeftClick) {
-                                    debug.text = "${debug.text}\nleftclicked"
-                                }
-
                             } else {
                                 isMove = true
                                 "moved on x:${pointX}, y:${pointY}\nwith velocity: X:${xVel}, Y:${yVel}".also {
                                     debug.text = it
                                 }
-                                if (isLeftClick) {
-                                    debug.text = "${debug.text}\nleftclicked"
-                                }
+                            }
+
+                            if (isLeftClick) {
+                                debug.text = "${debug.text}\nleftclicked"
+                            }
+
+                            println(sendPackets)
+                            if(sendPackets){
+                                val packedData = networkHandler.packData("trackpadControl", xVel, yVel, isLeftClick, false)
+                                println(packedData.toList())
+                                networkHandler.sendUDP(packedData)
+//                                println(packedData.toList())
                             }
                         }
                     }
@@ -78,12 +120,12 @@ class TrackpadHandler {
                         if (isLeftClick) {
                             isLeftClick = false
                         }
-
-                        //for testing only
-                        if (isLeftClick) {
-                            debug.text = "leftclicked"
-                        }
+//                        //for testing only
+//                        if (isLeftClick) {
+//                            debug.text = "leftclicked"
+//                        }
                     }
+
                 }
                 return true
             }

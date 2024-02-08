@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class ControlActivity : AppCompatActivity() {
+    private var mode: String? = null
     private var trackpadHandler = TrackpadHandler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +18,7 @@ class ControlActivity : AppCompatActivity() {
         val debugView = findViewById<TextView>(R.id.debug)
         val touchAreaView = findViewById<View>(R.id.touch_area)
 
-        val mode = intent.getStringExtra("mode")
+        this.mode = intent.getStringExtra("mode")
         var titleText:String = ""
 
         when(mode){

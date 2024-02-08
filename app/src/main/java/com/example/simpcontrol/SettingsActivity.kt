@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.isDigitsOnly
+import java.lang.Error
 import kotlin.math.pow
 
 class SettingsActivity : AppCompatActivity() {
@@ -36,6 +37,11 @@ class SettingsActivity : AppCompatActivity() {
         sharedPref = getSharedPreferences(UserSettings.PREFERENCE, MODE_PRIVATE)
         editor = sharedPref?.edit()
 
+        try {
+
+        }catch (err: Error){
+            println(err)
+        }
 
 
 //        pref = getSharedPreferences()
@@ -58,6 +64,9 @@ class SettingsActivity : AppCompatActivity() {
 
         applyButton?.setOnClickListener{
             saveSetting(statusText)
+        }
+        sendTestButton?.setOnClickListener{
+            testSetting(statusText)
         }
 
         typingHandler(ipInput) {
@@ -97,6 +106,27 @@ class SettingsActivity : AppCompatActivity() {
     private fun loadSharedPreference() {
         serverIP = sharedPref?.getString(UserSettings.SERVERIP,"192.168.0.1").toString()
         serverPort = sharedPref?.getInt(UserSettings.SERVERPORT,8008).toString().toInt()
+    }
+
+    private  fun testSetting(statusView:TextView){
+        val networkHandler = NetworkHandler()
+
+        networkHandler.testConnection(serverIP){
+            if(it){
+                statusView.post{
+                    statusView.setTextColor(Color.parseColor("#FF58F167"))
+                    statusView.text = getString(R.string.success_host_is_reachable)
+                }
+                networkHandler.connect(serverIP, serverPort)
+                val testPacket = arrayOf<Byte>(0,1, 0,0,0,2, 0,0,0,3, 0,4, 0,5).toByteArray()
+                networkHandler.sendUDP(testPacket)
+            }else{
+                statusView.post{
+                    statusView.setTextColor(Color.parseColor("#FFF15858"))
+                    statusView.text = getString(R.string.error_host_unreachable)
+                }
+            }
+        }
     }
 
     private fun saveSetting(statusView:TextView){

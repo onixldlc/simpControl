@@ -19,4 +19,6 @@
     <string name="error_invalid_ip">ERROR! invalid ip!</string>
     <string name="error_invalid_port">ERROR! invalid port!</string>
     <string name="success_changes_were_saved">SUCCESS! changes were saved!</string>
+    <string name="error_host_unreachable">ERROR: host unreachable!</string>
+    <string name="success_host_is_reachable">SUCCESS! host is reachable!, check server terminal to see if the test packet was successfuly received!</string>
 </resources>

@@ -8,9 +8,9 @@ class Packer {
 //    val finalByteArray:ByteArray = byteArrayOf()
 
     fun packMultiArray(arrayOfByteArray: Array<ByteArray>):ByteArray{
-        val finalByteArray = ByteArray(0)
+        var finalByteArray = ByteArray(0)
         for (byteArray in arrayOfByteArray){
-            finalByteArray.plus(byteArray)
+            finalByteArray = finalByteArray.plus(byteArray)
         }
         return finalByteArray
     }
@@ -18,10 +18,10 @@ class Packer {
     fun packMode(mode:String):ByteArray{
         var modeByte = 0
         when(mode){
-            "trackpadControl" -> modeByte = 1
-            "advanceTrackpadControl" -> modeByte = 2
-            "gyroControl" -> modeByte = 3
-            "advanceGyroControl" -> modeByte = 4
+            "trackpadControl" -> modeByte = 2
+            "advanceTrackpadControl" -> modeByte = 3
+            "gyroControl" -> modeByte = 4
+            "advanceGyroControl" -> modeByte = 5
         }
         return packChar(modeByte.toChar())
     }
