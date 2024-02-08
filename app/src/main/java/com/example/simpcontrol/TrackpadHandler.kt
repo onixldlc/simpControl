@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.lang.Error
 import java.util.concurrent.Executor
+import kotlin.math.abs
 import kotlin.properties.Delegates
 
 class TrackpadHandler {
@@ -18,6 +19,7 @@ class TrackpadHandler {
 
     private lateinit var serverIP:String
     private var serverPort by Delegates.notNull<Int>()
+    private var sensitivity by Delegates.notNull<Int>()
 
     private var mVelocityTracker: VelocityTracker? = null
 
@@ -41,6 +43,7 @@ class TrackpadHandler {
         )
         serverIP = sharedPref.getString(UserSettings.SERVERIP,"192.168.0.1").toString()
         serverPort = sharedPref.getInt(UserSettings.SERVERPORT,8008).toString().toInt()
+        sensitivity = sharedPref.getInt(UserSettings.SENSITIVITY,50).toString().toInt()
 
         try {
             println("[#]  testing reach to: $serverIP")
@@ -73,7 +76,7 @@ class TrackpadHandler {
 
                         newTimeMillisecond = System.currentTimeMillis()
                         val timeDiff = newTimeMillisecond - timeMillisecond
-                        isLeftClick = timeDiff < 200
+                        isLeftClick = timeDiff < 300
 //                            println("diff: ${timeDiff}, newTime: ${newTimeMillisecond}, prevTime: ${timeMillisecond}")
                         timeMillisecond = newTimeMillisecond
 
@@ -84,12 +87,12 @@ class TrackpadHandler {
                             val pointerId: Int = event.getPointerId(event.actionIndex)
                             val sens = 0.03
                             addMovement(event)
-                            computeCurrentVelocity(50)
+                            computeCurrentVelocity(sensitivity)
 
-                            val xVel = getXVelocity(pointerId) * -1
-                            val yVel = getYVelocity(pointerId) * -1
+                            val xVel = getXVelocity(pointerId)
+                            val yVel = getYVelocity(pointerId)
 
-                            if ((-sens < xVel && xVel < sens) && (-sens < yVel && yVel < sens) && !isMove) {
+                            if ( (abs(xVel) < sens) && (abs(yVel) < sens) && !isMove) {
                                 "touched on x:${pointX}, y:${pointY}".also { debug.text = it }
                             } else {
                                 isMove = true

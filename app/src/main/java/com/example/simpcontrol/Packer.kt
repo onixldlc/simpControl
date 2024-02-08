@@ -23,22 +23,23 @@ class Packer {
             "gyroControl" -> modeByte = 4
             "advanceGyroControl" -> modeByte = 5
         }
-        return packChar(modeByte.toChar())
+        return packByte(modeByte.toByte())
     }
     private fun packDouble(double: Double): ByteArray {
         val converted = double.toLong()
         return packLong(converted)
     }
     fun packFloat(float: Float):ByteArray{
-        val converted = float.toInt()
-        return packInt(converted)
+        val buffer = ByteBuffer.allocate(Float.SIZE_BYTES)
+        buffer.putFloat(float)
+        return buffer.array()
     }
     fun packBoolean(boolean: Boolean):ByteArray{
         var bool = 0
         if(boolean){
             bool = 1
         }
-        return packChar(bool.toChar())
+        return packByte(bool.toByte())
     }
 
     private fun packLong(long: Long):ByteArray{
@@ -56,6 +57,12 @@ class Packer {
     private fun packChar(char: Char):ByteArray{
         val buffer = ByteBuffer.allocate(Char.SIZE_BYTES)
         buffer.putChar(char)
+        return buffer.array()
+    }
+
+    private fun packByte(byte: Byte):ByteArray{
+        val buffer = ByteBuffer.allocate(Byte.SIZE_BYTES)
+        buffer.put(byte)
         return buffer.array()
     }
 }

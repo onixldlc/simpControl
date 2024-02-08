@@ -25,6 +25,7 @@ class SettingsActivity : AppCompatActivity() {
 
     var serverIP:String = ""
     var serverPort:Int = 0
+    var sensitivity:Int = 0
 
     var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
@@ -47,8 +48,11 @@ class SettingsActivity : AppCompatActivity() {
 //        pref = getSharedPreferences()
 
         val backButton = findViewById<TextView>(R.id.backButton)
+
         val ipInput = findViewById<EditText>(R.id.ServerIP)
         val portInput = findViewById<EditText>(R.id.ServerPort)
+        val sensInput = findViewById<EditText>(R.id.Sensitifity)
+
         val applyButton = findViewById<Button>(R.id.apply_setting)
         val sendTestButton = findViewById<Button>(R.id.send_test)
         val statusText = findViewById<TextView>(R.id.config_status)
@@ -57,6 +61,7 @@ class SettingsActivity : AppCompatActivity() {
 
         ipInput.setText(serverIP)
         portInput.setText(serverPort.toString())
+        sensInput.setText(sensitivity.toString())
 
         backButton?.setOnClickListener {
             finish ()
@@ -83,6 +88,16 @@ class SettingsActivity : AppCompatActivity() {
                 serverPort = it.toString().toInt()
             }
         }
+
+        typingHandler(sensInput){
+            println(it)
+            if(it.isNullOrEmpty()){
+                sensitivity = -1
+            }
+            else{
+                sensitivity = it.toString().toInt()
+            }
+        }
     }
 
     private fun typingHandler(textInput:EditText?, callback: (s: CharSequence?) -> Unit) {
@@ -106,6 +121,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun loadSharedPreference() {
         serverIP = sharedPref?.getString(UserSettings.SERVERIP,"192.168.0.1").toString()
         serverPort = sharedPref?.getInt(UserSettings.SERVERPORT,8008).toString().toInt()
+        sensitivity = sharedPref?.getInt(UserSettings.SENSITIVITY,50).toString().toInt()
     }
 
     private  fun testSetting(statusView:TextView){
@@ -118,7 +134,7 @@ class SettingsActivity : AppCompatActivity() {
                     statusView.text = getString(R.string.success_host_is_reachable)
                 }
                 networkHandler.connect(serverIP, serverPort)
-                val testPacket = arrayOf<Byte>(0,1, 0,0,0,2, 0,0,0,3, 0,4, 0,5).toByteArray()
+                val testPacket = arrayOf<Byte>(1, 0,0,0,2, 0,0,0,3, 4, 5).toByteArray()
                 networkHandler.sendUDP(testPacket)
             }else{
                 statusView.post{
@@ -139,14 +155,21 @@ class SettingsActivity : AppCompatActivity() {
             return
         }
 
-        val isServerPortValid = serverPort < 2.0.pow(16.0).toInt() && serverPort > 0
+        val isServerPortValid = serverPort > 0 && serverPort < 2.0.pow(16.0).toInt()
         if(!isServerPortValid){
             statusView.text = getString(R.string.error_invalid_port)
             return
         }
 
+        val isSensValid = sensitivity > 0 && sensitivity < 1000
+        if(!isSensValid){
+            statusView.text = getString(R.string.error_invalid_sensitivity)
+            return
+        }
+
         editor?.putString(UserSettings.SERVERIP, serverIP)
         editor?.putInt(UserSettings.SERVERPORT, serverPort)
+        editor?.putInt(UserSettings.SENSITIVITY, sensitivity)
 
         editor?.apply()
         statusView.setTextColor(Color.parseColor("#FF58F167"))
