@@ -2,15 +2,12 @@ package com.example.simpcontrol
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.Color
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.lang.Error
-import java.util.concurrent.Executor
 import kotlin.math.abs
 import kotlin.properties.Delegates
 
@@ -85,7 +82,7 @@ class TrackpadHandler {
                     MotionEvent.ACTION_MOVE -> {
                         mVelocityTracker?.apply {
                             val pointerId: Int = event.getPointerId(event.actionIndex)
-                            val sens = 0.03
+                            val sens = 0.5
                             addMovement(event)
                             computeCurrentVelocity(sensitivity)
 
@@ -106,9 +103,10 @@ class TrackpadHandler {
                             }
 
                             println(sendPackets)
+//                            if(sendPackets && (abs(xVel) > 0.002f) && (abs(yVel) > 0.002f)){
                             if(sendPackets){
                                 val packedData = networkHandler.packData("trackpadControl", xVel, yVel, isLeftClick, false)
-                                println(packedData.toList())
+//                                println(packedData.toList())
                                 networkHandler.sendUDP(packedData)
 //                                println(packedData.toList())
                             }
@@ -121,6 +119,8 @@ class TrackpadHandler {
                         mVelocityTracker = null
                         isMove = false
                         if (isLeftClick) {
+                            val packedData = networkHandler.packData("trackpadControl", 0.0f, 0.0f, false, false)
+                            networkHandler.sendUDP(packedData)
                             isLeftClick = false
                         }
 //                        //for testing only
