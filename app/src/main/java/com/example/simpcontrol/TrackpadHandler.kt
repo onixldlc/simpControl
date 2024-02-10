@@ -7,6 +7,12 @@ import android.view.VelocityTracker
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.Error
 import kotlin.math.abs
 import kotlin.properties.Delegates
@@ -31,9 +37,11 @@ class TrackpadHandler {
 
     private var timeMillisecond: Long = 0
     private var newTimeMillisecond: Long = 0
+    private var newEndTimeMillisecond: Long = 0
 
     fun run(touchArea: View, debug: TextView, context: Context) {
-        debug.text = context.getString(R.string.ready)
+        debug.text = context.getString(R.string.failed_to_connect)
+
 
         val sharedPref = context.getSharedPreferences(UserSettings.PREFERENCE,
             AppCompatActivity.MODE_PRIVATE
@@ -42,16 +50,79 @@ class TrackpadHandler {
         serverPort = sharedPref.getInt(UserSettings.SERVERPORT,8008).toString().toInt()
         sensitivity = sharedPref.getInt(UserSettings.SENSITIVITY,50).toString().toInt()
 
+//        val stuff1 =  runBlocking {
+//            suspend {
+//                coroutineScope{
+//                    launch {
+//
+//                    }
+//                }
+//            }
+//        }
+//
+
+//        networkHandler.execute {
+//            fun main() = runBlocking {
+//                suspend fun connect() = coroutineScope { // this: CoroutineScope
+//                    val test = async {
+//                        for (i in 1..5){
+//                            networkHandler.testConnection(serverIP){testSuccess ->
+//                                if(testSuccess) {
+//                                            sendPackets=true
+//                                }
+//                                println(testSuccess)
+////                                println(i)
+//                            }
+//                        }
+//                    }
+//                    test.await()
+////                    launch {
+//////                        println("[#]  testing reach to: $serverIP")
+//////                        for(i in 1..10){
+//////                            delay(500)
+//////                            networkHandler.testConnection(serverIP){testSuccess ->
+//////                                if(testSuccess){
+//////                                    println("[#]  successfully reach: $serverIP")
+//////                                    networkHandler.connect(serverIP, serverPort){connSuccess ->
+//////                                        if(connSuccess){
+//////                                            sendPackets=true
+//////                                            println(i)
+//////                                            println(sendPackets)
+////////                                debug.post { debug.text = context.getString(R.string.tries, i.toString()) }
+////////                                debug.post { debug.text = context.getString(R.string.ready) }
+//////                                        }
+//////                                    }
+//////                                }else{
+//////                                    println("[#]  fail to reach: $serverIP")
+//////                                }
+//////                            }
+//////                            println(i)
+//////                            println(sendPackets)
+//////                        }
+////                    }
+//                }
+//                connect()
+//                println("Done")
+//            }
+//            main()
+//        }
+
         try {
             println("[#]  testing reach to: $serverIP")
-            networkHandler.testConnection(serverIP){
-                if(it){
-                    println("[#]  successfully reach: $serverIP")
-                    networkHandler.connect(serverIP, serverPort){
-                        sendPackets=true
+            for(i in 1..10){
+                networkHandler.testConnection(serverIP){testSuccess ->
+                    if(testSuccess){
+                        println("[#]  successfully reach: $serverIP")
+                        networkHandler.connect(serverIP, serverPort){connSuccess ->
+                            if(connSuccess){
+                                sendPackets=true
+//                                debug.post { debug.text = context.getString(R.string.tries, i.toString()) }
+                                debug.post { debug.text = context.getString(R.string.ready) }
+                            }
+                        }
+                    }else{
+                        println("[#]  fail to reach: $serverIP")
                     }
-                }else{
-                    println("[#]  fail to reach: $serverIP")
                 }
             }
         }catch (err: Error){
@@ -114,6 +185,20 @@ class TrackpadHandler {
                     }
 
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+
+                        newEndTimeMillisecond = System.currentTimeMillis()
+                        val timeDiff = newEndTimeMillisecond - newTimeMillisecond
+
+                        println("is lefty: ${!isLeftClick}")
+                        println("time diff: ${(timeDiff in (500..3000))}")
+                        println("is move: ${!isMove}")
+
+                        if(!isLeftClick && (timeDiff in (2000..5000)) && !isMove){
+                            debug.text = "${debug.text}\nrightclicked"
+                            val packedData = networkHandler.packData("trackpadControl", 0.0f, 0.0f, false, true)
+                            networkHandler.sendUDP(packedData)
+                        }
+
                         //debug.text = ""
                         mVelocityTracker?.recycle()
                         mVelocityTracker = null

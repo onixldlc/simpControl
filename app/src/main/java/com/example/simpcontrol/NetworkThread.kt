@@ -46,7 +46,7 @@ open class NetworkThread: Executor {
     }
 
     override fun execute(command: Runnable) {
-        println(tasks.size)
+//        println(tasks.size)
         if(tasks.isEmpty()){
             tasks.add(command)
             startRunning()

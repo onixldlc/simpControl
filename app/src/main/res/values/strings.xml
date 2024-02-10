@@ -25,4 +25,6 @@
     <string name="sensitivity">Sensitivity:</string>
     <string name="_192_168_0_1">192.168.0.1</string>
     <string name="error_invalid_sensitivity">ERROR! invalid sensitivity!</string>
+    <string name="failed_to_connect">Failed to connect, offline mode!</string>
+    <string name="tries">tries: %1$s</string>
 </resources>

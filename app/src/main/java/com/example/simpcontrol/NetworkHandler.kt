@@ -80,4 +80,10 @@ class NetworkHandler: NetworkThread() {
             }
         }
     }
+
+    fun runAsync(callback: () -> Unit) {
+        execute{
+            callback()
+        }
+    }
 }
